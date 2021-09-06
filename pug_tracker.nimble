@@ -10,4 +10,7 @@ bin           = @["pug_tracker"]
 
 # Dependencies
 
-requires "nim >= 1.4.0"
+requires "nim >= 1.2.0"
+requires "dimscord"
+requires "https://github.com/ootiq/nenv.git"
+requires "https://github.com/World-of-Cryptopups/nimgecko.git"
