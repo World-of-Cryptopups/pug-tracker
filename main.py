@@ -1,46 +1,53 @@
-from hata import Client, IntentFlag, Embed
-from pycoingecko import CoinGeckoAPI
+import nextcord
+from nextcord.embeds import Embed
+from nextcord.message import Message
+from pycoinmarketcap import CoinMarketCap
 import os
 
-bot = Client(
-    os.getenv("TOKEN"),
-    extensions="commands_v2",
-    prefix=".",
-    intents=IntentFlag(0).update_by_keys(guilds=True, guild_messages=True),
-)
-cg = CoinGeckoAPI()
+from pycoinmarketcap.errors import ErrorBadRequest
 
 
-@bot.events
-async def ready(client):
-    print(f"{client:f} logged in.")
+cm = CoinMarketCap(os.getenv("API_KEY"))
 
 
-@bot.commands
-async def ping(ctx):
-    await ctx.reply("Pong!")
+class BotClient(nextcord.Client):
+    async def on_ready(self):
+        print("Logged in as ", self.user)
+
+    async def on_message(self, message: Message):
+        if message.author == self.user:
+            return
+
+        if not message.content.startswith("%"):
+            return
+
+        rawMessage = message.content.split(" ")
+
+        if message.content is None or len(message.content) < 3 or len(rawMessage) == 0:
+            return await message.channel.send("Invalid Bot Command format!")
+
+        symbol = rawMessage[0][1:]
+        currency = rawMessage[1] if len(rawMessage) > 2 else "usd"
+
+        try:
+            q = cm.crypto_quotes_latest(symbol=symbol, convert=currency)
+        except ErrorBadRequest as e:
+            return await message.channel.send(e.error_message)
+
+        for _, d in q.data.items():
+            for c, x in d["quote"].items():
+                embed = (
+                    Embed(title=f"{d['symbol']} to {c}", description=d["name"])
+                    .set_thumbnail(
+                        url=f"https://s2.coinmarketcap.com/static/img/coins/128x128/{d['id']}.png"
+                    )
+                    .add_field(name="Current Price", value=str(x["price"]))
+                    .add_field(name="24h Volume", value=str(x["volume_24h"]))
+                    .set_footer(text="Pug Tracker | pycoinmarketcap - 2021")
+                )
+
+                await message.channel.send(embed=embed)
 
 
-@bot.commands
-async def p(ctx, crypto: str = None, currency: str = "usd"):
-    if crypto is None:
-        await ctx.reply("No Currency to get.")
-        return
-
-    x = cg.get_price(
-        ids=f"{crypto}",
-        vs_currencies=f"{currency}",
-        include_market_cap=True,
-        include_24hr_vol=True,
-        include_24hr_change=True,
-        include_last_updated_at=True,
-    )
-
-    embed = Embed(f"{crypto.upper()} -> {currency.upper()}", "Current price").add_field(
-        "Price", str(x[crypto][currency])
-    )
-
-    await ctx.reply(embed)
-
-
-bot.start()
+bot = BotClient()
+bot.run(os.getenv("TOKEN"))
