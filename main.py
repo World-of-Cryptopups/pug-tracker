@@ -6,26 +6,29 @@ from pycoinmarketcap import CoinMarketCap
 from currency_symbols import CurrencySymbols
 import os
 
-from .web import keep_alive
+from web import keep_alive
 
 from pycoinmarketcap.errors import ErrorBadRequest
 
 
 cm = CoinMarketCap(os.getenv("API_KEY"))
 
-
+# round to 2 decimal places and format with comma spaces
 def formatNum(f: float) -> str:
     return "{:,.2f}".format(f)
 
 
+# use Client in order to manage custom commands
 class BotClient(nextcord.Client):
     async def on_ready(self):
         print("Logged in as ", self.user)
 
     async def on_message(self, message: Message):
+        # do not reply to self
         if message.author == self.user:
             return
 
+        # if it doesn't start with prefix, return
         if not message.content.startswith("%"):
             return
 
