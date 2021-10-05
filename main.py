@@ -21,13 +21,13 @@ class BotClient(nextcord.Client):
         print("Logged in as ", self.user)
 
     async def on_message(self, message: Message):
+        if message.author == self.user:
+            return
+
+        if not message.content.startswith("%"):
+            return
+
         async with message.channel.typing():
-            if message.author == self.user:
-                return
-
-            if not message.content.startswith("%"):
-                return
-
             rawMessage = message.content.split(" ")
 
             if (
