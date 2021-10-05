@@ -7,10 +7,15 @@ certifi==2021.5.30
 chardet==4.0.0
 charset-normalizer==2.0.6
 click==8.0.1
+currency-symbols==2.0.1
 flake8==3.9.2
+Flask==2.0.2
 idna==3.2
 isort==5.9.3
+itsdangerous==2.0.1
+Jinja2==3.0.2
 lazy-object-proxy==1.6.0
+MarkupSafe==2.0.1
 mccabe==0.6.1
 multidict==5.2.0
 mypy==0.910
@@ -29,5 +34,6 @@ toml==0.10.2
 tomli==1.2.1
 typing-extensions==3.10.0.2
 urllib3==1.26.7
+Werkzeug==2.0.1
 wrapt==1.12.1
 yarl==1.6.3
