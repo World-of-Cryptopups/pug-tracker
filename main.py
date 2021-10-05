@@ -43,7 +43,9 @@ class BotClient(nextcord.Client):
                 currency = rawMessage[1]
 
             try:
-                q = cm.crypto_quotes_latest(symbol=symbol, convert=currency)
+                q = cm.crypto_quotes_latest(
+                    symbol=symbol, convert=currency, skip_invalid=True
+                )
             except ErrorBadRequest as e:
                 return await message.channel.send(e.error_message)
 
@@ -56,6 +58,7 @@ class BotClient(nextcord.Client):
                         )
                         .set_author(
                             name=d["name"],
+                            url=f"https://coinmarketcap.com/currencies/{d['slug']}",
                             icon_url=f"https://s2.coinmarketcap.com/static/img/coins/128x128/{d['id']}.png",
                         )
                         .set_thumbnail(
