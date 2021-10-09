@@ -6,8 +6,6 @@ from pycoinmarketcap import CoinMarketCap
 from currency_symbols import CurrencySymbols
 import os
 
-from web import keep_alive
-
 from pycoinmarketcap.errors import ErrorBadRequest
 
 
@@ -97,11 +95,3 @@ class BotClient(nextcord.Client):
                     )
 
                     await message.channel.send(embed=embed)
-
-
-# run webapp
-keep_alive()
-
-# run bot
-bot = BotClient()
-bot.run(os.getenv("TOKEN"))

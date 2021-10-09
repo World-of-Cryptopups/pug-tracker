@@ -19,19 +19,19 @@ This bot uses the CoinMarketCap API so you need to signup for their api (https:/
   pip3 install -r requirements.txt
   ```
 
-- `web.py`
-  - This file is meant for usage on hosting your bot on some sites such as https://repl.it/
-
 ### Hosting
 
-- Running the main file
+- `web.py`
+  Run this file if you are hosting on a free service such as http://repl.it
+
   ```sh
-  python3 main.py
+  python3 web.py
   ```
-  Note: You can comment the following function to prevent running a local flask web server, if you are using a server.
-  ```py
-  # run webapp
-  keep_alive()
+
+- `server.py`
+  Run this file if you are hosting on a server, vps or your computer
+  ```sh
+  python3 server.py
   ```
 
 ##

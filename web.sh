@@ -1,0 +1,1 @@
+dotenv run -- python3 web.py
