@@ -8,6 +8,7 @@ chardet==4.0.0
 charset-normalizer==2.0.6
 click==8.0.1
 currency-symbols==2.0.1
+deta==1.0.0
 flake8==3.9.2
 Flask==2.0.2
 idna==3.2
