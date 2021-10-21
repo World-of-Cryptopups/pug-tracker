@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import List
 import nextcord
@@ -98,27 +100,24 @@ class BotClient(nextcord.Client):
         if not message.content.startswith("%"):
             return
 
-        rawMessage = message.content.split(" ")
-
         async with message.channel.typing():
-            if (
-                message.content is None
-                or len(message.content) < 3
-                or len(rawMessage) == 0
-            ):
+            if message.content is None or len(message.content) < 3 or len(cmd) == 0:
                 return await message.channel.send("Invalid Bot Command format!")
 
-            symbol = rawMessage[0][1:]
+            symbol = command[1:]
             currency = "usd"
-            if len(rawMessage) >= 2:
-                currency = rawMessage[1]
+
+            if len(cmd) >= 2:
+                currency = cmd[1]
 
                 await query_crypto_quote(message, symbol, currency)
 
 
 # get latest crypto quote and return embed
-async def query_crypto_quote(message: Message, symbol: List[str], currency: str):
-    sym = (",".join(symbol)).strip()
+async def query_crypto_quote(message: Message, symbol: List[str] | str, currency: str):
+    sym = symbol
+    if not isinstance(symbol, str):
+        sym = (",".join(symbol)).strip()
 
     try:
         q = cm.crypto_quotes_latest(symbol=sym, convert=currency, skip_invalid=True)
